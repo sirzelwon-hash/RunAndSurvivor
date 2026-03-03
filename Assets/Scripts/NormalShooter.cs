@@ -15,7 +15,7 @@ public class NormalShooter : MonoBehaviour
     public float shootSpeed = 10.0f; //弾速
 
     GameObject bullets; //生成した弾をまとめるオブジェクト
-    
+
     //InputAction(Playerマップ)のAttackアクションがおされたら
     void OnAttack(InputValue value)
     {
@@ -24,11 +24,30 @@ public class NormalShooter : MonoBehaviour
 
     void Shoot()
     {
-       
+        if (bulletManager.GetBulletRemaining() > 0)
+        {
+            //プレハブの生成と生成情報の取得
+            GameObject obj = Instantiate(
+                bulletPrefabs,
+                gate.transform.position,
+                Quaternion.Euler(90, 0, 0)
+                );
+
+            //bulletを消費
+            bulletManager.ConsumeBullet();
+
+            Rigidbody bulletRbody = obj.GetComponent<Rigidbody>();
+            bulletRbody.AddForce(new Vector3(0, 0, shootSpeed), ForceMode.Impulse);
+        }
+        else
+        {
+            //残数がなければマガジンを消費して補充開始
+            bulletManager.RecoverBullet();
+        }
     }
 
     void Start()
     {
-        
-    }    
+
+    }
 }

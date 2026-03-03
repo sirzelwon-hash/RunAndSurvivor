@@ -20,7 +20,7 @@ public class BulletManager : MonoBehaviour
     {
         if (bulletRemaining > 0) //残弾があれば
         {
-            bulletRemaining --;　//1つ減らす
+            bulletRemaining--;　//1つ減らす
         }
     }
 
@@ -33,13 +33,13 @@ public class BulletManager : MonoBehaviour
     //弾の充填
     public void AddBullet(int num)
     {
-        bulletRemaining = maxRemaining;
+        bulletRemaining = num;
     }
 
     //充填メソッド
     public void RecoverBullet()
     {
-       if(bulletRecover == null)  //コルーチンが発動していないなら充填する
+        if (bulletRecover == null)  //コルーチンが発動していないなら充填する
         {
             if (magazine > 0)
             {
@@ -52,16 +52,46 @@ public class BulletManager : MonoBehaviour
     //充填コルーチン
     IEnumerator RecoverBulletCol()
     {
-       
-        yield return new WaitForSeconds(recoveryTime); //ウェイト処理
+        //グローバル変数のcounterのセットアップ
+        counter = recoveryTime;
+
+        while (counter > 0)
+        {
+            yield return new WaitForSeconds(1.0f); //ウェイト処理
+            counter--;
+        }
+
         AddBullet(maxRemaining);
         bulletRecover = null;
-         
+
     }
 
     //画面上に簡易GUI表示
     void OnGUI()
     {
-       
+        //残弾数を表示(左50,上10,幅100,高さ30:黒色）
+        GUI.color = Color.black;
+        string label = "bullet:" + bulletRemaining;
+        GUI.Label(new Rect(50, 50, 100, 30), label);
+
+        //残マガジンを表示（上75）
+        label = "magazine:" + magazine;
+        GUI.Label(new Rect(50, 75, 100, 30), label);
+
+        //充填開始から充填完了まで赤い文字で点滅表示
+        if (bulletRecover != null)
+        {
+            GUI.color = Color.red;
+            float val = Mathf.Sin(Time.time * 50);
+            if (val > 0)
+            {
+                label = "bulletRecover:" + counter;
+                GUI.Label(new Rect(50, 25, 100, 30), label);
+            }
+            //else
+            //{
+            //    label = "";
+            //}
+        }
     }
 }
