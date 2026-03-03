@@ -18,32 +18,44 @@ public class BulletManager : MonoBehaviour
     //弾の消費
     public void ConsumeBullet()
     {
-       
+        if (bulletRemaining > 0) //残弾があれば
+        {
+            bulletRemaining --;　//1つ減らす
+        }
     }
 
     //残数の取得
     public int GetBulletRemaining()
     {
-        return 10;
+        return bulletRemaining;
     }
 
     //弾の充填
     public void AddBullet(int num)
     {
-       
+        bulletRemaining = maxRemaining;
     }
 
     //充填メソッド
     public void RecoverBullet()
     {
-       
+       if(bulletRecover == null)  //コルーチンが発動していないなら充填する
+        {
+            if (magazine > 0)
+            {
+                magazine--;　//マガジンの消費
+                bulletRecover = StartCoroutine(RecoverBulletCol());  //コルーチンの発動
+            }
+        }
     }
 
     //充填コルーチン
     IEnumerator RecoverBulletCol()
     {
        
-        yield return new WaitForSeconds(1.0f); //ウェイト処理
+        yield return new WaitForSeconds(recoveryTime); //ウェイト処理
+        AddBullet(maxRemaining);
+        bulletRecover = null;
          
     }
 
