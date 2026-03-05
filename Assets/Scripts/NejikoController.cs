@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class NejikoController : MonoBehaviour
 {
@@ -8,9 +10,9 @@ public class NejikoController : MonoBehaviour
 
     Vector3 moveDirection = Vector3.zero; //移動するべき量 new Vector3(0,0,0)の意
 
-    public float gravity;　//重力加速度
-    public float speedZ;　//前進する力
-    public float speedJump;　//ジャンプ力
+    public float gravity; //重力加速度
+    public float speedZ; //前進する力
+    public float speedJump; //ジャンプ力
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,7 +26,11 @@ public class NejikoController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (controller.isGrounded)　//characterCotrollerコンポーネントが持っている接地のチェック（bool）
+        //Debug.Log("Update動作中");
+        //Debug.Log(Input.GetAxis("Vertical"));
+        Debug.Log(controller.isGrounded);
+
+        if (controller.isGrounded) //characterCotrollerコンポーネントが持っている接地のチェック（bool）
         {
             //垂直方向のボタン入力をチェック（Vertical）
             if (Input.GetAxis("Vertical") > 0.0f)
@@ -55,7 +61,7 @@ public class NejikoController : MonoBehaviour
             Vector3 globalDirection = transform.TransformDirection(moveDirection);
 
             //Moveメソッドに与えたVector3値分だけ実際にPlayerが動く
-            controller.Move(moveDirection * Time.deltaTime);
+            controller.Move(globalDirection * Time.deltaTime);
 
             //移動後接地していたらY方向の速度はリセットする
             if (controller.isGrounded) moveDirection.y = 0;
