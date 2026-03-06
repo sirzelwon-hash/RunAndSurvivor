@@ -28,7 +28,7 @@ public class NejikoController : MonoBehaviour
     {
         //Debug.Log("Update動作中");
         //Debug.Log(Input.GetAxis("Vertical"));
-        Debug.Log(controller.isGrounded);
+        //Debug.Log(controller.isGrounded);
 
         if (controller.isGrounded) //characterCotrollerコンポーネントが持っている接地のチェック（bool）
         {
