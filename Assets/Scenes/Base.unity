@@ -900,7 +900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8207075264191696257, guid: b349e6d3d43b26a4f97d88daafd22a57, type: 3}
       propertyPath: goalPosition
-      value: 200
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8207075264191696257, guid: b349e6d3d43b26a4f97d88daafd22a57, type: 3}
       propertyPath: bulletManager
@@ -931,6 +931,14 @@ PrefabInstance:
       propertyPath: character
       value: 
       objectReference: {fileID: 1056368201}
+    - target: {fileID: 2767262155019281868, guid: b752fb8df3321be42a11640889a8fb1b, type: 3}
+      propertyPath: stageChips.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2767262155019281868, guid: b752fb8df3321be42a11640889a8fb1b, type: 3}
+      propertyPath: 'stageChips.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1775180842371483942, guid: 44b4f109b230df24cb313fd89fc2308c, type: 3}
     - target: {fileID: 2767262155019281868, guid: b752fb8df3321be42a11640889a8fb1b, type: 3}
       propertyPath: 'generatedStageList.Array.data[0]'
       value: 
@@ -996,6 +1004,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 2589692888078710268, guid: 6e5c37a87425af7489c9021b93243ee3, type: 3}
+      propertyPath: effectPrefab
+      value: 
+      objectReference: {fileID: 1074378351629463353, guid: 6517fb8f11ccf9d4bbafef822aff1220, type: 3}
     - target: {fileID: 6203677973455375260, guid: 6e5c37a87425af7489c9021b93243ee3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
