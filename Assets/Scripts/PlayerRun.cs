@@ -33,9 +33,14 @@ public class PlayerRun : MonoBehaviour
     public float speedJump = 8.0f;　//ジャンプ力
     public float accelerationZ = 10.0f;　//前進加速力
 
+    [Header("ソードのスクリプト")]
+    public NormalSword normalSword;
+
 
     void OnMove(InputValue value)
     {
+        if (normalSword.GetIsSword()) return; //NormalSwordスクリプトのisSword変数を見て攻撃中なら何もできない
+
         //すでに前に入力検知してインターバル宙であれば何もしない
         if (resetIntervalCol == null)
         {
@@ -48,6 +53,8 @@ public class PlayerRun : MonoBehaviour
 
     void OnJump(InputValue Value)
     {
+        if (normalSword.GetIsSword()) return; //NormalSwordスクリプトのisSword変数を見て攻撃中なら何もできない
+
         //ジャンプに関するボタン検知をしたらジャンプメソッド
         Jump();
     }
@@ -68,7 +75,19 @@ public class PlayerRun : MonoBehaviour
     {
         life++;
         if (life > DefaultLife) life = DefaultLife;
+        GameObject canvas = GameObject.FindGameObjectWithTag("UI"); //UIタグの検索
+        canvas.GetComponent<UIController>().UpdateLife(Life()); //UIの更新
     }
+
+    //ダメージによる体力の減少
+    public void LifeDown()
+    {
+        life--;
+        if (life > DefaultLife) life = DefaultLife;
+        GameObject canvas = GameObject.FindGameObjectWithTag("UI"); //UIタグの検索
+        canvas.GetComponent<UIController>().UpdateLife(Life()); //UIの更新
+    }
+
 
     bool IsStun()　//Playerを硬直させるべきかチェックするメソッド
     {
@@ -78,6 +97,11 @@ public class PlayerRun : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
+        //Debug.Log(life);
+
+        //ステージクリアかリザルト中はもう動けない
+        if (GameManager.gameState == GameState.stageclear || GameManager.gameState == GameState.result) return;
+
         //    if (Input.GetKeyDown("left")) MoveToLeft;
         //    if (Input.GetKeyDown("right")) MoveToRight;
         //    if (Input.GetKeyDown("space")) Jump;
@@ -192,10 +216,25 @@ public class PlayerRun : MonoBehaviour
         //相手がEnemyだったら
         if (hit.gameObject.tag == "Enemy")
         {
-            life--; //体力が減る
+            LifeDown(); //体力が減る
+            GetComponent<NormalShooter>().ShootPowerDown();
             recoverTime = StunDuration;　//定数の値にrecoverTimeにセッティング
 
-            Destroy(hit.gameObject); //相手は消滅
+            if (life <= 0) GameManager.gameState = GameState.gameover; //体力がなくなったらゲームオーバー
+
+            //Destroy(hit.gameObject); //相手は消滅
+
+            //相手のエフェクト発生と消滅を発動
+            hit.gameObject.GetComponent<Wall>().CreateEffect();
+        }
+    }
+
+    //ゴールに触れたらステータスをゲームクリアに変更
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Goal")
+        {
+            GameManager.gameState = GameState.stageclear;
         }
     }
 }

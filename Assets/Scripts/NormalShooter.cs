@@ -1,4 +1,4 @@
-using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,10 +16,34 @@ public class NormalShooter : MonoBehaviour
 
     GameObject bullets; //生成した弾をまとめるオブジェクト
 
+    const int maxShootPower = 3; //最大威力
+    int shootPower; //現在威力
+
+    [Header("ソードのスクリプト")]
+    public NormalSword normalSword; //ソード中の動きを封じるため
+
+
     //InputAction(Playerマップ)のAttackアクションがおされたら
     void OnAttack(InputValue value)
     {
-        Shoot();
+        if (normalSword.GetIsSword()) return; //ソード中なら何もできない
+
+        //リトライ状態の時ならアクションボタンで先のシーンへ
+        if (GameManager.gameState == GameState.retry)
+        {
+            GameManager.RetryScene();　//staticメソッドなので簡単に呼び出し
+        }
+        else if (GameManager.gameState == GameState.result)　//リザルト状態ならアクションボタンでネクストシーンへ
+        {
+            //行き先が自由に記述できるようpublic変数を使っているのでNextSceneはstaticメソッドにできず地道に呼び出し
+            GameManager gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameManager>();
+            gm.NextScene(gm.nextScene);
+        }
+        else //ゲームステータスがプレイ中なら
+        {
+            Shoot();
+        }
+
     }
 
     void Shoot()
@@ -53,5 +77,27 @@ public class NormalShooter : MonoBehaviour
     {
         //指定したタグを持っているオブジェクトを取得
         bullets = GameObject.FindGameObjectWithTag("Bullets");
+    }
+
+    public void ShootPowerUp()
+    {
+        shootPower++; //威力を上げる
+        if (shootPower > maxShootPower) shootPower = maxShootPower; //最大威力までに抑える
+        GameObject canvas = GameObject.FindGameObjectWithTag("UI");
+        canvas.GetComponent<UIController>().UpdateGun(); //UIを更新
+    }
+
+    public void ShootPowerDown()
+    {
+        shootPower--; //威力を下げる
+        if (shootPower <= 0) shootPower = 1; //最小威力1に抑える
+        GameObject canvas = GameObject.FindGameObjectWithTag("UI");
+        canvas.GetComponent<UIController>().UpdateGun(); //UIを更新
+    }
+
+    //現在の威力の取得
+    public int GetShootPower()
+    {
+        return shootPower;
     }
 }
